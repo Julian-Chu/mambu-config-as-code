@@ -18,10 +18,11 @@ type MambuConfigClient struct {
 
 const acceptHeader = "application/vnd.mambu.v2+yaml"
 
-func NewMambuConfigClient(mambuURL string, apikey string) *MambuConfigClient {
+func NewClient(mambuURL string, apikey string) *MambuConfigClient {
 	return &MambuConfigClient{mambuURL: mambuURL, apikey: apikey, client: http.Client{Timeout: 1 * time.Minute}}
 }
 
+// GetCustomFields represents GET /api/configuration/customfields.yaml
 func (c MambuConfigClient) GetCustomFields() CustomFieldsResponse {
 	client := c.client
 
