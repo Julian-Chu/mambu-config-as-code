@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Julian-Chu/MambuConfigurationAPI"
+	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient"
 )
 
 // `go run . -url=<mambuBaseURL> -apikey=<APIKEY>`
@@ -24,6 +24,6 @@ func main() {
 	if apikey == "" {
 		log.Fatalln("missing arg: apikey")
 	}
-	c := MambuConfigurationAPI.NewClient(mambuBaseURL, apikey)
+	c := client.NewClient(mambuBaseURL, apikey)
 	fmt.Println(c.GetCustomFields())
 }

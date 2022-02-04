@@ -1,4 +1,4 @@
-package MambuConfigurationAPI
+package client
 
 import (
 	"fmt"
