@@ -29,6 +29,7 @@ bin
 /Godeps/
 
 ### Terraform ###
+*.tfvars
 # Local .terraform directories
 **/.terraform/*
 
