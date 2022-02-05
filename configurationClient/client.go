@@ -3,7 +3,6 @@ package client
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
@@ -23,29 +22,29 @@ func NewClient(mambuURL string, apikey string) *MambuConfigClient {
 }
 
 // GetCustomFields represents GET /api/configuration/customfields.yaml
-func (c MambuConfigClient) GetCustomFields() CustomFieldsResponse {
+func (c MambuConfigClient) GetCustomFields() (*CustomFieldsResponse, error) {
 	client := c.client
 
 	request, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/api/configuration/customfields.yaml", c.mambuURL), nil)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 	request.Header.Add("Accept", acceptHeader)
 	request.Header.Add("ApiKey", c.apikey)
 	resp, err := client.Do(request)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	var customFieldsResp CustomFieldsResponse
 	bs, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 	err = yaml.Unmarshal(bs, &customFieldsResp)
 
-	return customFieldsResp
+	return &customFieldsResp, nil
 }
 
 type CustomFieldsResponse struct {

@@ -28,8 +28,10 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("MAMBU_API_KEY", nil),
 			},
 		},
-		ResourcesMap:         map[string]*schema.Resource{},
-		DataSourcesMap:       map[string]*schema.Resource{},
+		ResourcesMap: map[string]*schema.Resource{},
+		DataSourcesMap: map[string]*schema.Resource{
+			"mambu_custom_fields": dataSourceCustomFields(),
+		},
 		ConfigureContextFunc: providerConfigure,
 	}
 }
