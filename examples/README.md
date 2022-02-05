@@ -1,0 +1,1 @@
+terraform init && terraform apply -var-file=main.tfvars --auto-approve

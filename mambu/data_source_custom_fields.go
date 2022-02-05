@@ -3,8 +3,6 @@ package mambu
 import (
 	"context"
 	"encoding/json"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -33,134 +31,133 @@ func dataSourceCustomFields() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						/*
-							"description": &schema.Schema{
-								Type:     schema.TypeString,
-								Computed: true,
-							},
-							"type": &schema.Schema{
-								Type:     schema.TypeString,
-								Computed: true,
-							},
-							"available_for": &schema.Schema{
-								Type:     schema.TypeString,
-								Computed: true,
-							},
-							"custom_fields": &schema.Schema{
-								Type:     schema.TypeList,
-								Computed: true,
-								Elem: &schema.Resource{
-									Schema: map[string]*schema.Schema{
-										"id": &schema.Schema{
-											Type:     schema.TypeString,
-											Computed: true,
-										},
+						"description": &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"type": &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"available_for": &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"custom_fields": &schema.Schema{
+							Type:     schema.TypeList,
+							Computed: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"id": &schema.Schema{
+										Type:     schema.TypeString,
+										Computed: true,
+									},
 
-										"type": &schema.Schema{
-											Type:     schema.TypeString,
-											Computed: true,
-										},
-										"state": &schema.Schema{
-											Type:     schema.TypeString,
-											Computed: true,
-										},
-										"validation_rules": &schema.Schema{
-											Type:     schema.TypeSet,
-											Computed: true,
-											Elem: &schema.Resource{
-												Schema: map[string]*schema.Schema{
-													"unique": &schema.Schema{
-														Type:     schema.TypeBool,
-														Computed: true,
-													},
-													"validation_pattern": &schema.Schema{
-														Type:     schema.TypeString,
-														Computed: true,
-													},
+									"type": &schema.Schema{
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"state": &schema.Schema{
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"validation_rules": &schema.Schema{
+										Type:     schema.TypeSet,
+										Computed: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"unique": &schema.Schema{
+													Type:     schema.TypeBool,
+													Computed: true,
+												},
+												"validation_pattern": &schema.Schema{
+													Type:     schema.TypeString,
+													Computed: true,
 												},
 											},
 										},
-										"display_settings": &schema.Schema{
-											Type:     schema.TypeSet,
-											Computed: true,
-											Elem: &schema.Resource{
-												Schema: map[string]*schema.Schema{
-													"display_name": &schema.Schema{
-														Type:     schema.TypeString,
-														Computed: true,
-													},
-													"description": &schema.Schema{
-														Type:     schema.TypeString,
-														Computed: true,
-													},
-													"field_size": &schema.Schema{
-														Type:     schema.TypeString,
-														Computed: true,
-													},
+									},
+									"display_settings": &schema.Schema{
+										Type:     schema.TypeSet,
+										Computed: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"display_name": &schema.Schema{
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+												"description": &schema.Schema{
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+												"field_size": &schema.Schema{
+													Type:     schema.TypeString,
+													Computed: true,
 												},
 											},
 										},
-										"usage": &schema.Schema{
-											Type:     schema.TypeList,
-											Computed: true,
-											Elem: &schema.Resource{
-												Schema: map[string]*schema.Schema{
-													"id": &schema.Schema{
-														Type:     schema.TypeString,
-														Computed: true,
-													},
-													"required": &schema.Schema{
-														Type:     schema.TypeBool,
-														Computed: true,
-													},
-													"default": &schema.Schema{
-														Type:     schema.TypeBool,
-														Computed: true,
-													},
+									},
+									"usage": &schema.Schema{
+										Type:     schema.TypeList,
+										Computed: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"id": &schema.Schema{
+													Type:     schema.TypeString,
+													Computed: true,
+												},
+												"required": &schema.Schema{
+													Type:     schema.TypeBool,
+													Computed: true,
+												},
+												"default": &schema.Schema{
+													Type:     schema.TypeBool,
+													Computed: true,
 												},
 											},
 										},
-										"view_rights": &schema.Schema{
-											Type:     schema.TypeSet,
-											Computed: true,
-											Elem: &schema.Resource{
-												Schema: map[string]*schema.Schema{
-													"roles": &schema.Schema{
-														Type:     schema.TypeList,
-														Computed: true,
-														Elem: &schema.Schema{
-															Type: schema.TypeString,
-														},
+									},
+									"view_rights": &schema.Schema{
+										Type:     schema.TypeSet,
+										Computed: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"roles": &schema.Schema{
+													Type:     schema.TypeList,
+													Computed: true,
+													Elem: &schema.Schema{
+														Type: schema.TypeString,
 													},
-													"all_users": &schema.Schema{
-														Type:     schema.TypeBool,
-														Computed: true,
-													},
+												},
+												"all_users": &schema.Schema{
+													Type:     schema.TypeBool,
+													Computed: true,
 												},
 											},
 										},
-										"edit_rights": &schema.Schema{
-											Type:     schema.TypeSet,
-											Computed: true,
-											Elem: &schema.Resource{
-												Schema: map[string]*schema.Schema{
-													"roles": &schema.Schema{
-														Type:     schema.TypeList,
-														Computed: true,
-														Elem: &schema.Schema{
-															Type: schema.TypeString,
-														},
+									},
+									"edit_rights": &schema.Schema{
+										Type:     schema.TypeSet,
+										Computed: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"roles": &schema.Schema{
+													Type:     schema.TypeList,
+													Computed: true,
+													Elem: &schema.Schema{
+														Type: schema.TypeString,
 													},
-													"all_users": &schema.Schema{
-														Type:     schema.TypeBool,
-														Computed: true,
-													},
+												},
+												"all_users": &schema.Schema{
+													Type:     schema.TypeBool,
+													Computed: true,
 												},
 											},
 										},
 									},
 								},
-							},*/
+							},
+						},
 					},
 				},
 			},
@@ -186,16 +183,7 @@ func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m i
 
 	customFieldSets := flattenCustomFieldsData(&customFieldsResponse.CustomFieldSets)
 	bs, _ = json.Marshal(customFieldSets)
-	//if err := d.Set("custom_field_sets", interface{}(
-	//	[]map[string]interface{}{{
-	//		"error": "err",
-	//		"id":    "id"}},
-	//)); err != nil {
-	results := make([]map[string]interface{}, 1)
-	results[0] = make(map[string]interface{})
-	results[0]["id"] = "test"
-	results[0]["name"] = "test"
-	if err := d.Set("custom_field_sets", results); err != nil {
+	if err := d.Set("custom_field_sets", customFieldSets); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -203,7 +191,8 @@ func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m i
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	//d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	d.SetId("custom_field_sets")
 	diags = append(diags, diag.Diagnostic{
 		Severity: diag.Warning,
 		Summary:  string(bs),
@@ -252,9 +241,11 @@ func flattenCustomFieldsData(sets *[]struct {
 		for i, item := range *sets {
 			cf := make(map[string]interface{})
 			cf["id"] = item.ID
-			//cf["custom_field_sets_id"] = item.ID
 			cf["name"] = item.Name
-			//cf["custom_field_sets_name"] = item.Name
+			cf["description"] = item.Description
+			cf["type"] = item.Type
+			cf["available_for"] = item.AvailableFor
+			// todo custom fields
 
 			fieldSets[i] = cf
 		}
