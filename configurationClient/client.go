@@ -48,37 +48,40 @@ func (c MambuConfigClient) GetCustomFields() (*CustomFieldsResponse, error) {
 }
 
 type CustomFieldsResponse struct {
-	CustomFieldSets []struct {
-		ID           string `yaml:"id"`
-		Name         string `yaml:"name"`
-		Description  string `yaml:"description"`
-		Type         string `yaml:"type"`
-		AvailableFor string `yaml:"availableFor"`
-		CustomFields []struct {
-			ID              string `yaml:"id"`
-			Type            string `yaml:"type"`
-			State           string `yaml:"state"`
-			ValidationRules struct {
-				Unique bool `yaml:"unique"`
-			} `yaml:"validationRules"`
-			DisplaySettings struct {
-				DisplayName string `yaml:"displayName"`
-				Description string `yaml:"description"`
-				FieldSize   string `yaml:"fieldSize"`
-			} `yaml:"displaySettings"`
-			Usage []struct {
-				ID       string `yaml:"id"`
-				Required bool   `yaml:"required"`
-				Default  bool   `yaml:"default"`
-			} `yaml:"usage"`
-			ViewRights struct {
-				Roles    []interface{} `yaml:"roles"`
-				AllUsers bool          `yaml:"allUsers"`
-			} `yaml:"viewRights"`
-			EditRights struct {
-				Roles    []interface{} `yaml:"roles"`
-				AllUsers bool          `yaml:"allUsers"`
-			} `yaml:"editRights"`
-		} `yaml:"customFields"`
-	} `yaml:"customFieldSets"`
+	CustomFieldSets []CustomFieldSet `yaml:"customFieldSets"`
+}
+type CustomFieldSet struct {
+	ID           string        `yaml:"id"`
+	Name         string        `yaml:"name"`
+	Description  string        `yaml:"description"`
+	Type         string        `yaml:"type"`
+	AvailableFor string        `yaml:"availableFor"`
+	CustomFields []CustomField `yaml:"customFields"`
+}
+
+type CustomField struct {
+	ID              string `yaml:"id"`
+	Type            string `yaml:"type"`
+	State           string `yaml:"state"`
+	ValidationRules struct {
+		Unique bool `yaml:"unique"`
+	} `yaml:"validationRules"`
+	DisplaySettings struct {
+		DisplayName string `yaml:"displayName"`
+		Description string `yaml:"description"`
+		FieldSize   string `yaml:"fieldSize"`
+	} `yaml:"displaySettings"`
+	Usage []struct {
+		ID       string `yaml:"id"`
+		Required bool   `yaml:"required"`
+		Default  bool   `yaml:"default"`
+	} `yaml:"usage"`
+	ViewRights struct {
+		Roles    []interface{} `yaml:"roles"`
+		AllUsers bool          `yaml:"allUsers"`
+	} `yaml:"viewRights"`
+	EditRights struct {
+		Roles    []interface{} `yaml:"roles"`
+		AllUsers bool          `yaml:"allUsers"`
+	} `yaml:"editRights"`
 }
