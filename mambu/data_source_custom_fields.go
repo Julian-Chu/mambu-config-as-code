@@ -66,24 +66,8 @@ func dataSourceCustomFields() *schema.Resource {
 										Computed: true,
 									},
 									"display_settings": &schema.Schema{
-										Type:     schema.TypeSet,
+										Type:     schema.TypeMap,
 										Computed: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-												"display_name": &schema.Schema{
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-												"description": &schema.Schema{
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-												"field_size": &schema.Schema{
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-											},
-										},
 									},
 									"usage": &schema.Schema{
 										Type:     schema.TypeList,
@@ -223,6 +207,13 @@ func flattenCustomFields(fields *[]client.CustomField) interface{} {
 		cf["validation_rules"] = map[string]interface{}{
 			"unique": strconv.FormatBool(field.ValidationRules.Unique),
 		}
+		//if field.DisplaySettings != nil {
+		cf["display_settings"] = map[string]interface{}{
+			"displayName": field.DisplaySettings.DisplayName,
+			"description": field.DisplaySettings.Description,
+			"fieldSize":   field.DisplaySettings.FieldSize,
+		}
+		//}
 
 		customFields[i] = cf
 	}
