@@ -3,6 +3,7 @@ package mambu
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -52,7 +53,6 @@ func dataSourceCustomFields() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-
 									"type": &schema.Schema{
 										Type:     schema.TypeString,
 										Computed: true,
@@ -62,20 +62,8 @@ func dataSourceCustomFields() *schema.Resource {
 										Computed: true,
 									},
 									"validation_rules": &schema.Schema{
-										Type:     schema.TypeSet,
+										Type:     schema.TypeMap,
 										Computed: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-												"unique": &schema.Schema{
-													Type:     schema.TypeBool,
-													Computed: true,
-												},
-												"validation_pattern": &schema.Schema{
-													Type:     schema.TypeString,
-													Computed: true,
-												},
-											},
-										},
 									},
 									"display_settings": &schema.Schema{
 										Type:     schema.TypeSet,
@@ -181,7 +169,7 @@ func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m i
 		Detail:   "response",
 	})
 
-	customFieldSets := flattenCustomFieldsData(&customFieldsResponse.CustomFieldSets)
+	customFieldSets := flattenCustomFieldSets(&customFieldsResponse.CustomFieldSets)
 	bs, _ = json.Marshal(customFieldSets)
 	if err := d.Set("custom_field_sets", customFieldSets); err != nil {
 		return diag.FromErr(err)
@@ -201,40 +189,7 @@ func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func flattenCustomFieldsData(sets *[]struct {
-	ID           string `yaml:"id"`
-	Name         string `yaml:"name"`
-	Description  string `yaml:"description"`
-	Type         string `yaml:"type"`
-	AvailableFor string `yaml:"availableFor"`
-	CustomFields []struct {
-		ID              string `yaml:"id"`
-		Type            string `yaml:"type"`
-		State           string `yaml:"state"`
-		ValidationRules struct {
-			Unique bool `yaml:"unique"`
-		} `yaml:"validationRules"`
-		DisplaySettings struct {
-			DisplayName string `yaml:"displayName"`
-			Description string `yaml:"description"`
-			FieldSize   string `yaml:"fieldSize"`
-		} `yaml:"displaySettings"`
-		Usage []struct {
-			ID       string `yaml:"id"`
-			Required bool   `yaml:"required"`
-			Default  bool   `yaml:"default"`
-		} `yaml:"usage"`
-		ViewRights struct {
-			Roles    []interface{} `yaml:"roles"`
-			AllUsers bool          `yaml:"allUsers"`
-		} `yaml:"viewRights"`
-		EditRights struct {
-			Roles    []interface{} `yaml:"roles"`
-			AllUsers bool          `yaml:"allUsers"`
-		} `yaml:"editRights"`
-	} `yaml:"customFields"`
-}) interface{} {
-
+func flattenCustomFieldSets(sets *[]client.CustomFieldSet) interface{} {
 	if sets != nil {
 		fieldSets := make([]interface{}, len(*sets), len(*sets))
 
@@ -246,10 +201,30 @@ func flattenCustomFieldsData(sets *[]struct {
 			cf["type"] = item.Type
 			cf["available_for"] = item.AvailableFor
 			// todo custom fields
+			cf["custom_fields"] = flattenCustomFields(&item.CustomFields)
 
 			fieldSets[i] = cf
 		}
 		return fieldSets
 	}
 	return make([]interface{}, 0)
+}
+
+func flattenCustomFields(fields *[]client.CustomField) interface{} {
+	if fields == nil {
+		return make([]interface{}, 0)
+	}
+	customFields := make([]interface{}, len(*fields), len(*fields))
+	for i, field := range *fields {
+		cf := make(map[string]interface{})
+		cf["id"] = field.ID
+		cf["type"] = field.Type
+		cf["state"] = field.State
+		cf["validation_rules"] = map[string]interface{}{
+			"unique": strconv.FormatBool(field.ValidationRules.Unique),
+		}
+
+		customFields[i] = cf
+	}
+	return customFields
 }
