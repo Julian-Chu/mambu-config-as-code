@@ -207,15 +207,30 @@ func flattenCustomFields(fields *[]client.CustomField) interface{} {
 		cf["validation_rules"] = map[string]interface{}{
 			"unique": strconv.FormatBool(field.ValidationRules.Unique),
 		}
-		//if field.DisplaySettings != nil {
 		cf["display_settings"] = map[string]interface{}{
 			"displayName": field.DisplaySettings.DisplayName,
 			"description": field.DisplaySettings.Description,
 			"fieldSize":   field.DisplaySettings.FieldSize,
 		}
-		//}
+		cf["usage"] = flattenUsage(&field.Usage)
 
 		customFields[i] = cf
 	}
 	return customFields
+}
+
+func flattenUsage(items *[]client.Usage) interface{} {
+	if items == nil {
+		return make([]interface{}, 0)
+	}
+	usages := make([]interface{}, len(*items), len(*items))
+	for i, item := range *items {
+		usage := make(map[string]interface{})
+		usage["id"] = item.ID
+		usage["required"] = item.Required
+		usage["default"] = item.Default
+
+		usages[i] = usage
+	}
+	return usages
 }

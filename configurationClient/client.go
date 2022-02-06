@@ -67,12 +67,8 @@ type CustomField struct {
 		Unique bool `yaml:"unique"`
 	} `yaml:"validationRules"`
 	DisplaySettings DisplaySettings `yaml:"displaySettings"`
-	Usage           []struct {
-		ID       string `yaml:"id"`
-		Required bool   `yaml:"required"`
-		Default  bool   `yaml:"default"`
-	} `yaml:"usage"`
-	ViewRights struct {
+	Usage           []Usage         `yaml:"usage"`
+	ViewRights      struct {
 		Roles    []interface{} `yaml:"roles"`
 		AllUsers bool          `yaml:"allUsers"`
 	} `yaml:"viewRights"`
@@ -86,4 +82,9 @@ type DisplaySettings struct {
 	DisplayName string `yaml:"displayName"`
 	Description string `yaml:"description"`
 	FieldSize   string `yaml:"fieldSize"`
+}
+type Usage struct {
+	ID       string `yaml:"id"`
+	Required bool   `yaml:"required"`
+	Default  bool   `yaml:"default"`
 }
