@@ -68,11 +68,8 @@ type CustomField struct {
 	} `yaml:"validationRules"`
 	DisplaySettings DisplaySettings `yaml:"displaySettings"`
 	Usage           []Usage         `yaml:"usage"`
-	ViewRights      struct {
-		Roles    []interface{} `yaml:"roles"`
-		AllUsers bool          `yaml:"allUsers"`
-	} `yaml:"viewRights"`
-	EditRights struct {
+	ViewRights      ViewRights      `yaml:"viewRights"`
+	EditRights      struct {
 		Roles    []interface{} `yaml:"roles"`
 		AllUsers bool          `yaml:"allUsers"`
 	} `yaml:"editRights"`
@@ -87,4 +84,9 @@ type Usage struct {
 	ID       string `yaml:"id"`
 	Required bool   `yaml:"required"`
 	Default  bool   `yaml:"default"`
+}
+
+type ViewRights struct {
+	Roles    []interface{} `yaml:"roles"`
+	AllUsers bool          `yaml:"allUsers"`
 }
