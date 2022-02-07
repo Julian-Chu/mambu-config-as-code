@@ -15,10 +15,6 @@ func dataSourceCustomFields() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceCustomFieldsRead,
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 			"custom_field_sets": &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
@@ -89,49 +85,60 @@ func dataSourceCustomFields() *schema.Resource {
 											},
 										},
 									},
-									"view_rights": &schema.Schema{
-										Type:     schema.TypeSet,
-										Computed: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-												"roles": &schema.Schema{
-													Type:     schema.TypeList,
-													Computed: true,
-													Elem: &schema.Schema{
-														Type: schema.TypeString,
-													},
-												},
-												"all_users": &schema.Schema{
-													Type:     schema.TypeBool,
-													Computed: true,
-												},
-											},
-										},
-									},
-									"edit_rights": &schema.Schema{
-										Type:     schema.TypeSet,
-										Computed: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-												"roles": &schema.Schema{
-													Type:     schema.TypeList,
-													Computed: true,
-													Elem: &schema.Schema{
-														Type: schema.TypeString,
-													},
-												},
-												"all_users": &schema.Schema{
-													Type:     schema.TypeBool,
-													Computed: true,
-												},
-											},
-										},
-									},
+									//"view_rights": &schema.Schema{
+									//	//Type:     schema.TypeList,
+									//	Type:     schema.TypeSet,
+									//	Computed: true,
+									//	Elem:     schemaViewRights(),
+									//	Set:      schema.HashResource(schemaViewRights()),
+									//},
+									//"edit_rights": &schema.Schema{
+									//	Type:     schema.TypeSet,
+									//	Computed: true,
+									//	Elem:     schemaEditRights(),
+									//	Set:      schema.HashResource(schemaEditRights()),
+									//},
 								},
 							},
 						},
 					},
 				},
+			},
+		},
+	}
+}
+
+func schemaEditRights() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"roles": &schema.Schema{
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"all_users": &schema.Schema{
+				Type:     schema.TypeBool,
+				Computed: true,
+			},
+		},
+	}
+}
+
+func schemaViewRights() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			//"roles": &schema.Schema{
+			//	Type:     schema.TypeList,
+			//	Computed: true,
+			//	Elem: &schema.Schema{
+			//		Type: schema.TypeString,
+			//	},
+			//},
+			"all_users": &schema.Schema{
+				Type:     schema.TypeBool,
+				Computed: true,
 			},
 		},
 	}
@@ -156,10 +163,6 @@ func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m i
 	customFieldSets := flattenCustomFieldSets(&customFieldsResponse.CustomFieldSets)
 	bs, _ = json.Marshal(customFieldSets)
 	if err := d.Set("custom_field_sets", customFieldSets); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("name", "t"); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -213,10 +216,23 @@ func flattenCustomFields(fields *[]client.CustomField) interface{} {
 			"fieldSize":   field.DisplaySettings.FieldSize,
 		}
 		cf["usage"] = flattenUsage(&field.Usage)
+		//cf["view_rights"] = flattenViewRight(&field.ViewRights)
 
 		customFields[i] = cf
 	}
 	return customFields
+}
+
+func flattenViewRight(s *client.ViewRights) interface{} {
+
+	attr := map[string]interface{}{
+		"all_users": s.AllUsers,
+		//"roles":     s.Roles,
+	}
+	attrs := []interface{}{
+		attr,
+	}
+	return schema.NewSet(schema.HashResource(schemaViewRights()), attrs)
 }
 
 func flattenUsage(items *[]client.Usage) interface{} {
