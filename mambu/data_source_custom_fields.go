@@ -86,8 +86,7 @@ func dataSourceCustomFields() *schema.Resource {
 										},
 									},
 									"view_rights": &schema.Schema{
-										Type: schema.TypeList,
-										//Computed: true,
+										Type:     schema.TypeList,
 										MaxItems: 1,
 										Required: true,
 										Elem: &schema.Resource{Schema: map[string]*schema.Schema{
@@ -104,12 +103,27 @@ func dataSourceCustomFields() *schema.Resource {
 											},
 										}},
 									},
-									//"edit_rights": &schema.Schema{
-									//	Type:     schema.TypeSet,
-									//	Computed: true,
-									//	Elem:     schemaEditRights(),
-									//	Set:      schema.HashResource(schemaEditRights()),
-									//},
+									"edit_rights": &schema.Schema{
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Required: true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"roles": &schema.Schema{
+													Type:     schema.TypeList,
+													Computed: true,
+													Elem: &schema.Schema{
+														Type: schema.TypeString,
+													},
+												},
+												"all_users": &schema.Schema{
+													Type:     schema.TypeBool,
+													Computed: true,
+												},
+											},
+										},
+										//Set: schema.HashResource(schemaEditRights()),
+									},
 								},
 							},
 						},
@@ -120,34 +134,16 @@ func dataSourceCustomFields() *schema.Resource {
 	}
 }
 
-func schemaEditRights() *schema.Resource {
-	return &schema.Resource{
-		Schema: map[string]*schema.Schema{
-			"roles": &schema.Schema{
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"all_users": &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true,
-			},
-		},
-	}
-}
-
-//func schemaViewRights() *schema.Resource {
+//func schemaEditRights() *schema.Resource {
 //	return &schema.Resource{
 //		Schema: map[string]*schema.Schema{
-//			//"roles": &schema.Schema{
-//			//	Type:     schema.TypeList,
-//			//	Computed: true,
-//			//	Elem: &schema.Schema{
-//			//		Type: schema.TypeString,
-//			//	},
-//			//},
+//			"roles": &schema.Schema{
+//				Type:     schema.TypeList,
+//				Computed: true,
+//				Elem: &schema.Schema{
+//					Type: schema.TypeString,
+//				},
+//			},
 //			"all_users": &schema.Schema{
 //				Type:     schema.TypeBool,
 //				Computed: true,
@@ -155,7 +151,7 @@ func schemaEditRights() *schema.Resource {
 //		},
 //	}
 //}
-//
+
 func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*client.MambuConfigClient)
 
@@ -178,7 +174,6 @@ func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m i
 		return diag.FromErr(err)
 	}
 
-	//d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 	d.SetId("custom_field_sets")
 	diags = append(diags, diag.Diagnostic{
 		Severity: diag.Warning,
@@ -228,14 +223,15 @@ func flattenCustomFields(fields *[]client.CustomField) interface{} {
 			"fieldSize":   field.DisplaySettings.FieldSize,
 		}
 		cf["usage"] = flattenUsage(&field.Usage)
-		cf["view_rights"] = flattenViewRight(&field.ViewRights)
+		cf["view_rights"] = flattenRights(&field.ViewRights)
+		cf["edit_rights"] = flattenRights(&field.EditRights)
 
 		customFields[i] = cf
 	}
 	return customFields
 }
 
-func flattenViewRight(rs *client.ViewRights) interface{} {
+func flattenRights(rs *client.Rights) interface{} {
 	if rs == nil {
 		return []interface{}{}
 	}
