@@ -1,4 +1,4 @@
-package mambu
+package provider
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient/pkg"
+	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient/rest"
 )
 
 const KeyMambuBaseURL = "mambu_base_url"
@@ -50,15 +50,15 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if mambuBaseURL == "" {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "mambu base url is required",
-			Detail:   "mambu base url is required",
+			Summary:  "provider base url is required",
+			Detail:   "provider base url is required",
 		})
 	}
 	if mambuApiKey == "" {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "mambu api key is required",
-			Detail:   "mambu api key is required",
+			Summary:  "provider api key is required",
+			Detail:   "provider api key is required",
 		})
 	}
 

@@ -1,4 +1,4 @@
-package pkg
+package rest
 
 import (
 	"net/http"

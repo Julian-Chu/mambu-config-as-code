@@ -1,4 +1,4 @@
-package mambu
+package provider
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient/pkg"
+	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient/rest"
 )
 
 func dataSourceCustomFields() *schema.Resource {
@@ -133,24 +133,6 @@ func dataSourceCustomFields() *schema.Resource {
 		},
 	}
 }
-
-//func schemaEditRights() *schema.Resource {
-//	return &schema.Resource{
-//		Schema: map[string]*schema.Schema{
-//			"roles": &schema.Schema{
-//				Type:     schema.TypeList,
-//				Computed: true,
-//				Elem: &schema.Schema{
-//					Type: schema.TypeString,
-//				},
-//			},
-//			"all_users": &schema.Schema{
-//				Type:     schema.TypeBool,
-//				Computed: true,
-//			},
-//		},
-//	}
-//}
 
 func dataSourceCustomFieldsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*client.MambuConfigClient)

@@ -1,4 +1,4 @@
-package pkg
+package rest
 
 import (
 	"io"
@@ -15,7 +15,7 @@ type MambuConfigClient struct {
 	apikey  string
 }
 
-const acceptHeader = "application/vnd.mambu.v2+yaml"
+const acceptHeader = "application/vnd.provider.v2+yaml"
 
 func NewClient(mambuURL string, apikey string) *MambuConfigClient {
 	baseURL, err := url.Parse(mambuURL)
