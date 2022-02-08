@@ -22,7 +22,7 @@ func NewClient(mambuURL string, apikey string) *MambuConfigClient {
 }
 
 // GetCustomFields represents GET /api/configuration/customfields.yaml
-func (c MambuConfigClient) GetCustomFields() (*CustomFieldsResponse, error) {
+func (c MambuConfigClient) GetCustomFields() (*CustomFieldsConfig, error) {
 	client := c.client
 
 	request, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/api/configuration/customfields.yaml", c.mambuURL), nil)
@@ -37,7 +37,7 @@ func (c MambuConfigClient) GetCustomFields() (*CustomFieldsResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	var customFieldsResp CustomFieldsResponse
+	var customFieldsResp CustomFieldsConfig
 	bs, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (c MambuConfigClient) GetCustomFields() (*CustomFieldsResponse, error) {
 	return &customFieldsResp, nil
 }
 
-type CustomFieldsResponse struct {
+type CustomFieldsConfig struct {
 	CustomFieldSets []CustomFieldSet `yaml:"customFieldSets"`
 }
 type CustomFieldSet struct {
