@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,7 +16,7 @@ type MambuConfigClient struct {
 	apikey  string
 }
 
-const acceptHeader = "application/vnd.provider.v2+yaml"
+const acceptHeader = "application/vnd.mambu.v2+yaml"
 
 func NewClient(mambuURL string, apikey string) *MambuConfigClient {
 	baseURL, err := url.Parse(mambuURL)
@@ -40,6 +41,7 @@ func (c MambuConfigClient) resolvePath(path string, query url.Values) (string, e
 func (c MambuConfigClient) sendRequest(method string, path string, body io.Reader, query url.Values) ([]byte, error) {
 	client := c.client
 	absolutePath, err := c.resolvePath(path, query)
+	fmt.Println(absolutePath)
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +52,7 @@ func (c MambuConfigClient) sendRequest(method string, path string, body io.Reade
 	request.Header.Add("Accept", acceptHeader)
 	request.Header.Add("ApiKey", c.apikey)
 	resp, err := client.Do(request)
+	fmt.Printf("%+v\n", request)
 	if err != nil {
 		return nil, err
 	}
@@ -59,5 +62,6 @@ func (c MambuConfigClient) sendRequest(method string, path string, body io.Reade
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(string(bs))
 	return bs, nil
 }
