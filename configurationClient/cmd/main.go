@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient"
+	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient/pkg"
 )
 
 // `go run . -url=<mambuBaseURL> -apikey=<APIKEY>`

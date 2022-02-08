@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient"
+	client "github.com/Julian-Chu/MambuConfigurationAPI/configurationClient/pkg"
 )
 
 func dataSourceCustomFields() *schema.Resource {
